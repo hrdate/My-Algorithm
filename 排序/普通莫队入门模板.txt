@@ -1,0 +1,53 @@
+#pragma GCC optimize(2)
+#include<bits/stdc++.h> 
+using namespace std;
+#define ll long long
+#define endl "\n"
+#define put putchar('\n')
+const int MAX=1e6+7;
+const int mod=1e9+7;
+const int inf=0x3f3f3f3f;
+int a[MAX],ans[MAX],cnt[MAX];
+int block,kind,n,m,nl,nr;
+struct node{
+	int l,r,id;
+	bool operator<(const node a)const{
+		//return r/block==a.r/block?l<a.l:r<a.r;
+		return l^a.l?l<a.l:l&1?r<a.r:r>a.r;
+	}
+}q[MAX];
+
+void add(int x){
+	if(cnt[a[x]]==0)kind++;
+	cnt[a[x]]++;
+}
+void del(int x){
+	if(cnt[a[x]]==1)kind--;
+	cnt[a[x]]--;
+}
+void move_to(int tl,int tr)//移动到[tl,tr]
+{
+    //注意先加入再删除，否则删除一个不存在的元素有时候会出问题
+    while(nr<tr)add(++nr);
+    while(nl>tl)add(--nl);
+    while(nr>tr)del(nr--);
+    while(nl<tl)del(nl++);
+}
+int main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);
+	cin>>n;
+	for(int i=1;i<=n;i++)cin>>a[i];
+	cin>>m;
+	block=n/sqrt(m*2/3);
+	for(int i=1;i<=m;i++){
+		cin>>q[i].l>>q[i].r;q[i].id=i;
+	}
+	sort(q+1,q+1+m);	
+	nl=1,nr=0;
+	for(int i=1;i<=m;i++){
+		move_to(q[i].l,q[i].r);
+		ans[q[i].id]=kind;
+	}
+	for(int i=1;i<=m;i++)cout<<ans[i]<<endl;
+   return 0;
+}  

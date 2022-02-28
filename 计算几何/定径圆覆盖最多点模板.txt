@@ -1,0 +1,51 @@
+#define eps 1e-9
+#define pi acos(-1.0)
+#define N 222
+struct point{
+    double x,y;
+}p[N];
+struct alpha{
+    double v;
+    bool flag;
+    bool friend operator <(const alpha &a,const alpha &b){//排序专用偏序关系
+       return a.v < b.v;
+    }
+}alp[N * 2];
+ 
+double dis(point a, point b){
+    return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+int n;
+void solve(double R){//传入定径圆的半径
+    int ans = 0;
+    double theta,phi,dist;
+    for(int i = 0;i < n;i++){
+       int k = 0;
+       for(int j = 0;j < n;j++){
+           if(i == j) continue;
+           dist = dis(p[i],p[j]);
+           if(dist > 2.0 * R)
+              continue;
+           theta = atan2(p[j].y - p[i].y, p[j].x - p[i].x);
+           if(theta < 0)
+              theta += 2 * pi;
+           phi = acos(dist / (2.0 * R));
+           alp[k].v = theta - phi + 2 * pi;
+           alp[k].flag = true;
+           alp[k + 1].v = theta + phi + 2 * pi;
+           alp[k + 1].flag = false;
+           k += 2;
+       }
+       sort(alp,alp + k);
+       int sum = 0;
+       for(int j = 0;j < k;j++){
+           if(alp[j].flag)
+              sum ++;
+           else
+              sum --;
+           if(sum > ans)
+              ans = sum;
+       }
+    }
+    printf("%d\n",ans + 1);
+}

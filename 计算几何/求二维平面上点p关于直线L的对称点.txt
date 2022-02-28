@@ -1,0 +1,11 @@
+
+Point SymPoint(Point p, Line L) // 求二维平面上点p关于直线L的对称点 
+{ 
+    Point result; 
+    double a = L.p2.x - L.p1.x; 
+    double b = L.p2.y - L.p1.y; 
+    double t = ( (p.x - L.p1.x) * a + (p.y - L.p1.y) * b ) / (a*a + b*b); 
+    result.x = 2 * L.p1.x + 2 * a * t - p.x; 
+    result.y = 2 * L.p1.y + 2 * b * t - p.y; 
+    return result; 
+}

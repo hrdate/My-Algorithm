@@ -1,0 +1,79 @@
+//P1742 最小圆覆盖 https://www.luogu.com.cn/problem/P1742
+/* 令前i-1个点的最小覆盖圆为(o,r)
+如果第i个点在这个圆中，直接跳过
+如果不在，那么第i个点一定在前i个点的最小覆盖圆上
+此时前i-1个点中还有两个也在最小覆盖圆上 */
+#pragma GCC optimize(2)
+#include<bits/stdc++.h> 
+using namespace std;
+#define ll long long
+#define endl "\n"
+#define inline __inline__ __attribute__((always_inline))
+const int MAX=1e6+7;
+const int mod=1e9+7;
+const int inf=0x3f3f3f3f;
+const double esp=1e-6;
+struct Point{
+	double x,y;
+	Point(){};
+	inline Point(register double tx,register double ty):x(tx),y(ty){};
+	inline Point operator+ (const Point&t){return Point(x+t.x,y+t.y);}
+	inline Point operator- (const Point&t){return Point(x-t.x,y-t.y);}
+	inline Point operator* (double t){return Point(x*t,y*t);}
+	//Point operator/ (double t){return Point(x/t,y/t);}
+	inline double operator* (const Point&t){return x*t.y-y*t.x;}
+	inline double Length(){return sqrt(x*x+y*y);}
+	inline Point rot(){return Point(-y,x);}
+};
+struct Line{
+	Point a,b;
+	inline Line(){};
+	inline Line(Point ta,Point tb):a(ta),b(tb){}; 
+	double Length(){return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));}
+};
+
+#define Vector Point
+double Length(Vector node){
+	return sqrt(node.x*node.x+node.y*node.y);
+}
+double Dot(Vector a,Vector b){  //点积 
+	return a.x*b.x+a.y*b.y;
+} 
+double Cross(Vector a,Vector b){  //叉积 |a|*|b|sinθ, θ为b相对于a逆时针旋转的弧度 
+	return a.x*b.y-a.y*b.x;
+}
+Point Intersection(Line X,Line Y){  //求两直线的交点 
+	return X.a+X.b*(Y.b*(Y.a-X.a)/(Y.b*X.b));
+} 
+Point circle(Point X,Point Y,Point Z){   //三点确定一圆 
+	return Intersection(Line((X+Y)*0.5,(Y-X).rot()),Line((X+Z)*0.5,(Z-X).rot()));
+}
+int main(){
+    ios_base::sync_with_stdio(0);cin.tie(0),cout.tie(0);
+	int n;cin>>n;
+	double r=0;
+	vector<Point>p(n);
+	Point ans=Point(0,0); 
+	for(int i=0;i<n;i++)cin>>p[i].x>>p[i].y;
+	random_shuffle(p.begin(),p.end());
+	for(int i=0;i<n;i++){
+		if((p[i]-ans).Length()>r){
+			ans=p[i];r=0;
+			for(int j=0;j<i;j++){
+				if((p[j]-ans).Length()>r){
+					ans=(p[i]+p[j])*0.5;
+					r=(p[j]-ans).Length();
+					for(int k=0;k<j;k++){
+						if((p[k]-ans).Length()>r){
+							ans=circle(p[i],p[j],p[k]);
+							r=(p[k]-ans).Length();
+						}
+					}
+				}
+			}
+		}
+	}
+	cout<<fixed<<setprecision(10)<<r<<endl<<ans.x<<" "<<ans.y;
+	
+   return 0;
+} 

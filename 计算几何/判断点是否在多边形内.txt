@@ -1,0 +1,38 @@
+struct Point{
+	int x,y;
+	Point(){};
+	Point(int tx,int ty):x(tx),y(ty){};
+	Point operator+ (Point node){return Point(x+node.x,y+node.y);}
+	Point operator- (Point node){return Point(x-node.x,y-node.y);}
+	Point operator* (double t){return Point(x*t,y*t);}
+	Point operator/ (double t){return Point(x/t,y/t);}
+	double operator* (Point node){return x*node.y-y*node.x;}
+	double Length(){return sqrt(x*x+y*y);}
+};
+struct Line{
+	Point a,b;
+	Line(){};
+	Line(Point ta,Point tb):a(ta),b(tb){}; 
+	double Length(){return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));}
+	Point Intersection(Line X,Line Y){return X.a+X.b*(Y.b*(Y.a-X.a)/(Y.b*X.b));}  //求两直线的交点 
+};
+#define Vector Point
+double Length(Vector node){
+	return sqrt(node.x*node.x+node.y*node.y);
+}
+double Dot(Vector a,Vector b){  //点积 
+	return a.x*b.x+a.y*b.y;
+} 
+double Cross(Vector a,Vector b){  //叉积 |a|*|b|sinθ, θ为b相对于a逆时针旋转的弧度 
+	return a.x*b.y-a.y*b.x;
+}
+int IsPointInPolygon(vector<Point>poly,Point pt){  //判断点pt是否在多边形poly中 
+	int f=0;
+	for(int i=0,j=poly.size()-1;i<poly.size();j=i++){
+		if((poly[i].y<=pt.y)&&(pt.y<poly[j].y)&&(pt.x-poly[i].x)*(poly[j].y-poly[i].y)<(poly[j].x-poly[i].x)*(pt.y-poly[i].y)||
+          (poly[j].y<=pt.y)&&(pt.y<poly[i].y)&&(pt.x-poly[i].x)*(poly[j].y-poly[i].y)>(poly[j].x-poly[i].x)*(pt.y-poly[i].y)){
+            f=!f;
+        }
+	}
+	return f;
+}

@@ -1,0 +1,90 @@
+//题目：ICPC Central Europe Regional Contest 2019 D. Deep800080
+//考点：圆与直线的交点，点与直线的距离，直线与直线交点
+//题意：在直线(0,0), (A,B)上找一点建立一个半径为R的圆，要求覆盖最多的点。
+//题解：对每一个点作半径为R的圆与直线相交，交点中一个赋值为1，另一个赋值为-1。
+//这就变成了在直线上遍历，遇到为1的点加一，遇到为-1的点减一，最后取最大值。
+#pragma GCC optimize(2)
+#include<bits/stdc++.h> 
+using namespace std;
+#define ll long long
+#define endl "\n"
+const double eps=1e-6;
+ll n,r,A,B;
+int dcmp(double x){
+    if(x>eps)return 1;
+    return x<-eps?-1:0;
+}
+struct point{
+	double x,y;
+	int v;  //标记 
+	point(){};
+	point(double tx,double ty):x(tx),y(ty){};
+	point operator-(const point &a){return point(x-a.x,y-a.y);}
+	point operator+(const point &a){return point(x+a.x,y+a.y);}
+	bool operator==(const point &a){return (this->x==a.x&&this->y==a.y)?1:0;}
+	point operator*(const double a){return point(x*a,y*a);}
+	point operator/(const double a){return point(x/a,y/a);}
+	double Length(){return sqrt(x*x+y*y);}//线段的长度
+};
+vector<point>p;
+bool cmp(point a,point b){
+	if(dcmp(a.x-b.x)==0&&dcmp(a.y-b.y)==0)return a.v>b.v;
+	if(dcmp(a.x-b.x)==0)return a.y<b.y;
+	return a.x<b.x;
+}
+#define Vector point
+struct line {
+    point a,b;
+    line(){};
+    line(point ta,point tb):a(ta),b(tb){};
+}L;
+double Length(Vector v){  //线段的长度 
+	return sqrt(v.x*v.x+v.y*v.y);
+}
+double dot(Vector a,Vector b){  //点积 
+	return a.x*b.x+a.y*b.y;
+} 
+double cross(Vector a,Vector b){  //叉积 |a|*|b|sinθ, θ为b相对于a逆时针旋转的弧度 
+	return a.x*b.y-a.y*b.x;
+}
+double DistanceToLine(point p,point a,point b){  //点p到直线ab的距离 
+	Vector v1=b-a,v2=p-a;
+	return fabs(cross(v1,v2))/Length(v1);  //距离=高=面积/底边 
+}
+point Intersection(line X,line Y) { //算直线交点
+    point v=X.a-X.b,w=Y.a-Y.b,u=X.a-Y.a;
+    double t=cross(w,u)/cross(v,w);
+    return X.a+v*t;
+}
+line Circle_inter(point pre,line L){  // 求圆与直线的两个交点，存在line两端 
+	point tmp=pre;
+	tmp.x+=L.a.y-L.b.y;
+	tmp.y+=L.b.x-L.a.x;
+	tmp=Intersection(line(pre,tmp),L);
+	double t=sqrt(r*r-(tmp-pre).Length()*(tmp-pre).Length())/(L.a-L.b).Length();
+	point p1=tmp-(L.b-L.a)*t,p2=tmp+(L.b-L.a)*t;
+	return line(p1,p2);
+} 
+int main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);
+	cin>>n>>r>>A>>B;
+	L.a=point(0,0);  L.b=point(A,B);//初始化线段 
+	vector<point>node(n);
+	for(int i=0;i<n;i++){
+		cin>>node[i].x>>node[i].y;
+		if(DistanceToLine(node[i],L.a,L.b)<=r){
+			line now=Circle_inter(node[i],L);
+			point p1,p2;
+			p1.x=now.a.x,p1.y=now.a.y,p1.v=1;
+			p2.x=now.b.x,p2.y=now.b.y,p2.v=-1;
+			if(p1.x>p2.x)p1.v=-1,p2.v=1;
+			else if(dcmp(p1.x-p2.x)==0&&p1.y>p2.y) p1.v=-1,p2.v=1;
+			p.push_back(p1);p.push_back(p2);
+		}
+	}
+	sort(p.begin(),p.end(),cmp);
+	ll ans=0,now=0;
+	for(auto x:p) now+=x.v,ans=max(ans,now);
+	cout<<ans;
+   return 0;
+} 

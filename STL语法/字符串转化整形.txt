@@ -1,0 +1,11 @@
+字符串转整型
+string str = "12345";
+cout << atoi(str.c_str())<<endl;
+————————————————
+string str="123"
+cout<<stoi(str)<<endl;
+
+整型转字符串
+int a=123;
+string s=to_string(a);
+cout<<s;

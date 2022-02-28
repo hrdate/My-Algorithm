@@ -1,0 +1,10 @@
+bitset<size>b(二进制字符串/数值)
+
+可类似数组[]下标查询
+可以进行数值运算| ^ & ~ << >>
+可用函数 cout:计算其中1的个数，size:求bitsize位数大小，test(index):判断下标为index的元素是否为1
+any:判断是否有1，none:判断是否没有1，all:判断是否全为1，flip():全部/按下标取反
+set(),set(index),set(indext,1/0):设置数值，
+to_string():bitset转化成string，to_ulong(),to_ullong():将bitset转换成unsigned long (long)类型
+
+https://www.cnblogs.com/magisk/p/8809922.html

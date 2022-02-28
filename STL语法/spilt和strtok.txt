@@ -1,0 +1,53 @@
+
+C++无自带split
+void _split(const string &s, char delim, vector<string> &elems) {
+	stringstream ss(s);
+	string item;
+	while (getline(ss, item, delim)) 
+	elems.push_back(item);
+}
+vector<string> split(const string &s, char delim) {
+	vector<string> elems;
+	_split(s, delim, elems);
+	return elems;
+}
+int main(){
+    string s="hello world",str=" ";
+	vector<string>a=split(s,' ');
+	for(auto it:a)cout<<it<<endl;
+} 
+
+——————————————————————————————————————
+
+str -- 要被分解成一组小字符串的字符串。
+
+delim -- 包含分隔符的 C 字符串。
+
+该函数返回被分解的第一个子字符串，如果没有可检索的字符串，则返回一个空指针。
+
+ char str[80] = "This is - www.runoob.com - website";
+   const char s[2] = "-";
+   char *token;
+   
+   /* 获取第一个子字符串 */
+   token = strtok(str, s);
+   
+   /* 继续获取其他的子字符串 */
+   while( token != NULL ) {
+      printf( "%s\n", token );
+    
+      token = strtok(NULL, s);
+   }
+
+产生以下结果：
+This is 
+ www.runoob.com 
+ website
+
+
+
+
+
+
+
+

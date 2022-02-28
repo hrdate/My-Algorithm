@@ -1,0 +1,14 @@
+
+
+// a[i] 为初始数组,下标范围为 [1, n]
+// len 为离散化后数组的有效长度
+std::sort(a + 1, a + 1 + n);
+len = std::unique(a + 1, a + n + 1) - a -
+      1;  // 离散化整个数组的同时求出离散化后本质不同数的个数。
+
+——————————————————————————————
+// std::vector<int> a, b; // b 是 a 的一个副本
+std::sort(a.begin(), a.end());
+a.erase(std::unique(a.begin(), a.end()), a.end());
+for (int i = 0; i < n; ++i)
+  b[i] = std::lower_bound(a.begin(), a.end(), b[i]) - a.begin();

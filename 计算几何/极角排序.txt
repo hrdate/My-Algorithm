@@ -1,0 +1,100 @@
+
+//裸极角排序
+struct Point {
+	double x,y;
+	Point(double x=0,double y=0):x(x),y(y){}
+	 
+}p[505];
+Point operator-(Point a, Point b){
+	return Point(a.x-b.x,a.y-b.y);
+}
+double Cross(Point p0,Point p1,Point p2) {
+	Point a=p1-p0;
+    Point b=p2-p0;
+    return a.x*b.y-b.x*a.y;
+}
+Point o; // o=p[0];
+bool cmp(Point a,Point b) {
+	return Cross(o,a,b)>0;
+}
+/////////////////////////////////////////////////////////////////////////
+——————————————————————————————
+写在前面：存储点的结构体和函数
+
+struct point//存储点
+{
+    double x,y;
+};
+
+double cross(double x1,double y1,double x2,double y2)　//计算叉积
+{
+    return (x1*y2-x2*y1);
+}
+
+double compare(point a,point b,point c)//计算极角
+{
+    return cross((b.x-a.x),(b.y-a.y),(c.x-a.x),(c.y-a.y));
+}
+
+——————————————————————————————
+方法1：利用atan2（）函数按极角从小到大排序。
+bool cmp1(point a,point b)
+{
+    if(atan2(a.y,a.x)!=atan2(b.y,b.x))
+        return atan2(a.y,a.x)<atan2(b.y,b.x);
+    else return a.x<b.x;
+}
+
+———————————————————————————————
+方法2：利用叉积按极角从小到大排序。
+
+叉积=0是指两向量平行（重合）；叉积>0，则向量a在向量b的顺时针方向
+（可以理解为在a在b的下方）；
+叉积<0，则向量a在向量b的逆时针方向（可以理解为在a在b的上方）。
+
+bool cmp2(point a,point b)
+{
+    point c;//原点
+    c.x = 0;
+    c.y = 0;
+    if(compare(c,a,b)==0)//计算叉积，函数在上面有介绍，如果叉积相等，按照X从小到大排序
+        return a.x<b.x;
+    else return compare(c,a,b)>0;
+}
+
+———————————————————————————————
+方法3：先按象限从小到大排序 再按极角从小到大排序
+
+int Quadrant(point a)　　//象限排序，注意包含四个坐标轴
+{
+    if(a.x>0&&a.y>=0)  return 1;
+    if(a.x<=0&&a.y>0)  return 2;
+    if(a.x<0&&a.y<=0)  return 3;
+    if(a.x>=0&&a.y<0)  return 4;
+}
+
+
+bool cmp3(point a,point b)  //先按象限从小到大排序 再按极角从小到大排序
+{
+    if(Quadrant(a)==Quadrant(b))//返回值就是象限
+        return cmp1(a,b);
+    else Quadrant(a)<Quadrant(b);
+}
+
+/////////////////////////////////////////////////////////////////////////
+——————————————————————————————
+
+struct cmp{
+        Point p;
+        cmp(const Point &p0){p=p0;}
+        bool operator()(const Point &aa,const Point &bb){
+            Point a=aa,b=bb;
+            int d=sgn((a-p)^(b-p));
+            if(d==0){
+                return sgn(a.distance(p)-b.distance(p))<0;
+            }
+            return d>0;
+        }
+    };
+ 
+sort(p,p+n,cmp(p[0]));

@@ -1,0 +1,48 @@
+//给定  个二维平面上的点，求一组欧几里得距离最近的点对。
+struct Point{
+	double x,y;
+	Point(){};
+	inline Point(register double tx,register double ty):x(tx),y(ty){};
+	inline Point operator+ (const Point&t){return Point(x+t.x,y+t.y);}
+	inline Point operator- (const Point&t){return Point(x-t.x,y-t.y);}
+	inline Point operator* (double t){return Point(x*t,y*t);}
+	//Point operator/ (double t){return Point(x/t,y/t);}
+	inline double operator* (const Point&t){return x*t.y-y*t.x;}
+	inline double Length(){return sqrt(x*x+y*y);}
+	inline Point rot(){return Point(-y,x);}
+}p[MAX]; 
+int ans[MAX];
+double dis(Point a, Point b){
+    return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+bool cmpy(Point a,Point b){
+	return a.y<b.y;
+}
+double divide(int left,int right){
+    double d=1e7;
+       if(left==right)
+        return d;
+    if(left+1==right)
+        return dis(p[left],p[right]);
+    int mid=(left+right)>>1; 
+    double d1=divide(left,mid);
+   double d2=divide(mid+1,right);
+	 d=min(d1,d2);  
+	int i,j,k=0;
+     for(i=left;i<=right;i++)  {
+        if(fabs(p[mid].x-p[i].x)<=d)
+           ans[k++]=i;
+    }
+    sort(ans, ans + k, cmpy);    
+	for(i=0;i<k-1;i++)
+    {
+        for(j=i+1;j<k && p[ans[j]].y-p[ans[i]].y<d;j++)
+        {
+            double distance=dis(p[ans[i]],p[ans[j]]);
+            if(distance <d)
+                d=distance;
+        }
+    }
+    return d;
+}
+    

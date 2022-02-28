@@ -1,0 +1,63 @@
+const double eps=1e-6;
+int dcmp(double x){
+    if(x>eps)return 1;
+    return x<-eps?-1:0;
+}
+struct point{
+	double x,y;
+	int v;  //标记 
+	point(){};
+	point(double tx,double ty):x(tx),y(ty){};
+	point operator-(const point &a){return point(x-a.x,y-a.y);}
+	point operator+(const point &a){return point(x+a.x,y+a.y);}
+	bool operator==(const point &a){return (this->x==a.x&&this->y==a.y)?1:0;}
+	point operator*(const double a){return point(x*a,y*a);}
+	point operator/(const double a){return point(x/a,y/a);}
+};
+#define Vector point
+struct line{
+	point v,p; //直线以给定两点形式表示
+	point P;  //直线上的一点 
+	Vector dir; // 直线的方向向量
+	line(){};
+    line(point ta,point tb):a(ta),b(tb){}; 
+};
+double Length(Vector v){  //线段的长度 
+	return sqrt(v.x*v.x+v.y*v.y);
+}
+double dot(Vector a,Vector b){  //点积 
+	return a.x*b.x+a.y*b.y;
+} 
+double cross(Vector a,Vector b){  //叉积 |a|*|b|sinθ, θ为b相对于a逆时针旋转的弧度 
+	return a.x*b.y-a.y*b.x;
+}
+double DistanceToLine(point p,point a,point b){  //点p到直线ab的距离 
+	Vector v1=b-a,v2=p-a;
+	return fabs(cross(v1,v2))/Length(v1);  //距离=高=面积/底边 
+}
+double DistaceToSegment(point p,point a,point b){  //点p到线段ab的距离 
+	if(a==b)return Length(p-a);
+	Vector v1=b-a,v2=p-a,v3=p-b;   //先判断点的投影与线段的位置关系
+	if(dcmp(dot(v1,v2))<0)return Length(v2);
+	if(dcmp(dot(v1,v3))>0)return Length(v3);
+	return fabs(cross(v1,v2))/Length(v1);
+}
+bool ToLeftTest(point a,point b,point c){ //判断向量bc是否位于向量ab的逆时针方向 
+	return cross(b-a,c-b)>0;
+} 
+bool isOnSegment(point c,point a,point b){  //判断点c是否在线段ab上 
+	Vector v1=c-a,v2=c-b;
+	return dcmp(cross(v1,v2))==0?1:0;
+}
+bool SegmentProperIntersection(point a,point b,point c,point d){  //判断线段是否相交 
+	//判断ABAC叉积和ABAD叉积的积的正负，为负则CD分别在直线AB两侧，同理判断点AB和直线CD
+	if(isOnSegment(a,c,d)||isOnSegment(b,c,d)    		//考虑端点 
+	||isOnSegment(c,a,b)||isOnSegment(d,a,b))return 1;   
+	double c1=cross(b-a,c-a),c2=cross(b-a,d-a),c3=cross(d-c,a-c),c4=cross(d-c,b-c);
+	return dcmp(c1)*dcmp(c2)<0&&dcmp(c3)*dcmp(c4)<0; 
+}
+point GetLineIntersection(point p,Vector v,point q,Vector w){  //叉积求两条直线交点 
+	Vector u=p-q;
+	double t=cross(w,u)/cross(v,w); //利用叉积求得点P分线段DC的比,转化成叉积求面积的比 
+	return p+v*t;
+} 

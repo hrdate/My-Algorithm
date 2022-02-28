@@ -1,0 +1,43 @@
+C++手写快读详解（快速读入数字）
+getchar() 为读入单个字符（包括空格 ，换行符）
+
+当然，快读也有不适用的时候，例如读入中包含大量无用空格
+这时就识趣的别用快读了吧！
+
+template<typename T>inline void read(T& x)
+{
+	x = 0;
+	static int p; p = 1;
+	static char c; c = getchar();
+	while (!isdigit(c)) { if (c == '-')p = -1; c = getchar(); }
+	while (isdigit(c)) { x = (x << 1) + (x << 3) + (c - 48); c = getchar(); }
+	x *= p;
+}
+————————————————————
+int read()
+{
+	int x = 0; char ch = getchar();
+	while (ch<'0' || ch>'9')ch = getchar();
+	while (ch >= '0' && ch <= '9') { x = x * 10 + ch - '0'; ch = getchar(); }
+	return x;
+}//快读 
+
+样例：
+读入大数 b模mod 输入字符c （应用于欧拉定理）
+char c; ll b = 0;
+while ((c = getchar()) < '0' || c > '9');
+while (b = b * 10ll + (c ^ '0'), (c = getchar()) >= '0' && c <= '9')
+if (b >= mod)
+{
+	b %= mod;
+	flag = 1;
+}
+
+
+
+
+
+
+
+
+
