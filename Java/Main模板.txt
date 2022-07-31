@@ -1,0 +1,19 @@
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+import java.math.*;
+import java.text.*;
+
+public class Main {
+
+    final static int MAX = 100005;
+    static Scanner in = new Scanner(new BufferedInputStream(System.in));
+    static PrintWriter out = new PrintWriter(System.out);
+    public static void main(String[] args) {
+        //解题过程
+        
+        out.flush();
+        out.close();
+        in.close();
+    }
+}

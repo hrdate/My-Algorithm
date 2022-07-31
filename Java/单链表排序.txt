@@ -1,0 +1,111 @@
+https://www.nowcoder.com/practice/f23604257af94d939848729b1a5cda08
+
+
+
+插入排序O(n^2)
+public ListNode sortInList (ListNode head) {
+        // write code here
+       if (head == null || head.next == null) return head;
+        ListNode cur = head.next , ans = new ListNode(head.val);
+        while(cur != null) {
+            ListNode th = ans , pre = null;
+            if(cur.val <= th.val) {
+                ListNode temp = new ListNode(cur.val);
+                temp.next = ans;
+                ans = temp;
+            }else {
+                while(th != null && cur.val > th.val) {
+                    pre = th;
+                    th = th.next;
+                }
+                pre.next = new ListNode(cur.val);
+                pre.next.next = th;
+            }
+            cur = cur.next;
+        }
+        return ans;
+}
+
+
+归并排序
+import java.util.*;
+
+/*
+ * public class ListNode {
+ *   int val;
+ *   ListNode next = null;
+ * }
+ */
+
+public class Solution {
+    /**
+     * 
+     * @param head ListNode类 the head node
+     * @return ListNode类
+     */
+    public ListNode sortInList (ListNode head) {
+        // write code here
+        if(head == null || head.next == null) return head;
+        ListNode slow = head, fast = head.next;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode next = slow.next;
+        slow.next = null;
+        ListNode left = sortInList(head);
+        ListNode right = sortInList(next);
+        ListNode ans = new ListNode(-1), res = ans;
+        while(left != null && right != null) {
+            if(left.val < right.val) {
+                res.next = left;
+                left = left.next;
+            }else {
+                res.next = right;
+                right = right.next;
+            }
+            res = res.next;
+        }
+        res.next = (left != null ? left : right);
+        return ans.next;
+    }
+}
+
+
+
+
+
+快速排序
+/*
+选取头节点作为基准值，遍历链表，将比它小的节点头插在它前面，比它大的节点尾插在它后面
+假设lhead维护的是小于基准值的头插指针，utail维护的是大于等于基准值的尾插指针
+则一次对[head , end）快排结束后有
+-[ lhead , head ) （左闭右开）是小于基准值的一部分
+-[ head.next , end ) （左闭右开）是大于等于基准值的一部分
+*/
+class Solution {
+    public static ListNode sortList(ListNode head) {
+        return quickSort(head ,null);
+    }
+
+    public static ListNode quickSort(ListNode head ,ListNode end){
+        if(head ==end || head.next ==end) return head;
+        ListNode lhead = head ,utail = head ,p = head.next;
+        while (p != end){
+            ListNode next = p.next;
+            if(p.val < head.val){//头插
+                p.next = lhead;
+                lhead = p;
+            }
+            else { //尾插
+                utail.next = p;
+                utail = p;
+            }
+            p = next;
+        }
+        utail.next = end;
+        ListNode node = quickSort(lhead, head);
+        head.next =  quickSort(head.next, end);
+        return node;
+    }
+}

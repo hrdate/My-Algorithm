@@ -1,0 +1,32 @@
+class Solution {
+    int[] arr;
+    int[] t;
+    int len;
+    public int question(int[] nums, int arg) {
+        arr = nums;
+        len = arr.length;
+        t = new int[len];
+        megger_sort(0,len - 1); //
+        .....
+    }
+    //归并排序
+    public void megger_sort(int left,int right) {
+        if(left >= right)return ;
+        int mid = (left + right) / 2;
+        megger_sort(left,mid);    
+        megger_sort(mid + 1,right);
+        int i = left , j = mid + 1, index = left;
+        while(index <= right) {
+            if(i > mid || (j <= right && arr[i] > arr[j])) {
+                t[index++] = arr[j++];
+            }else{
+                t[index++] = arr[i++];
+            }
+        }
+        for(int k = left; k <= right; ++k ) {
+            arr[k] = t[k];
+        }
+    }
+
+
+}

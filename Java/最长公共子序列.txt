@@ -1,0 +1,48 @@
+import java.util.*;
+
+/*
+
+*/
+public class Solution {
+    /**
+     * longest common subsequence
+     * @param s1 string字符串 the string
+     * @param s2 string字符串 the string
+     * @return string字符串
+     */
+    public String LCS (String s1, String s2) {
+        // write code here
+        int len1 = s1.length(), len2 = s2.length();
+        //构造一个LCS长度数组
+        int[][]dp = new int[len1 + 1][len2 + 1];
+        for(int i = 0; i < len1; i++) {
+            for(int j = 0; j < len2; j++) {
+                if(s1.charAt(i) == s2.charAt(j)) {
+                    dp[i + 1][j + 1] = dp[i][j] + 1;
+                }else {
+                    dp[i + 1][j + 1] = Math.max(dp[i + 1][j],dp[i][j + 1]);
+                }
+            }
+        }
+        //反推结果
+        StringBuilder ans = new StringBuilder();
+        int i = len1 - 1, j = len2 - 1;
+        while(i >= 0 && j >= 0){
+            if(s1.charAt(i) == s2.charAt(j)){
+                ans.append(s1.charAt(i));
+                i--;
+                j--;
+            }else {
+                if(dp[i + 1][j] > dp[i][j + 1]){
+                    j--;
+                }else if(dp[i + 1][j] < dp[i][j + 1]){
+                    i--;
+                }else{
+                    //对于有分支的可能时，选取单方向
+                    i--;
+                }
+            }
+        }
+        return dp[len1][len2] > 0 ? ans.reverse().toString() : "-1";
+    }
+}

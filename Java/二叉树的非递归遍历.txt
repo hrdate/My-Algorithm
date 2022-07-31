@@ -1,0 +1,111 @@
+//前序
+方法1
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        if(root == null) return ans;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.add(root);
+        while(!stack.isEmpty()) {
+            TreeNode now = stack.pop();
+            ans.add(now.val);
+            if(now.right != null) stack.add(now.right);
+            if(now.left != null) stack.add(now.left);
+        }
+        return ans;
+    }
+}
+
+方法2
+public static List<Integer> preOrder(TreeNode root){
+         List<Integer> list = new ArrayList();
+         Stack<TreeNode> stack = new Stack();
+         TreeNode cur = root;
+         while(cur != null ||  !stack.isEmpty()){
+             while(cur != null){   //一直往左压入栈
+                 list.add(cur.val);
+                 stack.push(cur);
+                 cur = cur.left;
+             }
+             cur = stack.pop();
+             cur = cur.right;
+         }
+         return list;
+    }
+
+
+//中序
+
+方法1
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer>ans = new ArrayList<>();
+        TreeNode now = root;
+        Stack<TreeNode> stack = new Stack<>();
+        while((now != null) || (!stack.isEmpty())) {
+            if(now != null) {
+                stack.push(now);
+                now = now.left;
+            }else {
+                now = stack.pop();
+                ans.add(now.val);
+                now = now.right;
+            }
+        }
+        return ans;
+    }
+}
+
+
+方法2
+public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if(root == null) {
+            return  list;
+        }
+        Stack<TreeNode> stack = new Stack();
+        TreeNode cur = root;
+        while(cur  !=  null || !stack.isEmpty()) {
+            while(cur != null) {
+                stack.push(cur);
+                cur = cur.left;
+            }
+            cur = stack.pop();
+            list.add(cur.val);
+            cur = cur.right;
+        }
+        return list;
+    }
+
+
+后序遍历
+
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode cur = root, pre = null;        
+        while(cur != null || !stack.isEmpty()) {
+            while(cur != null) {
+                stack.push(cur);
+                cur = cur.left;
+            }
+            cur = stack.peek();
+//后序遍历的过程中在遍历完左子树跟右子树cur都会回到根结点。所以当前不管是从左子树还是右子树回到根结点都不应该再操作了，应该退回上层。
+//如果是从右边再返回根结点，应该回到上层。
+//主要就是判断出来的是不是右子树，是的话就可以把根节点=加入到list了
+            if(cur.right == null || cur.right == pre) {
+                ans.add(cur.val);
+                stack.pop();
+                pre = cur;
+                cur = null;
+            }else {
+                cur = cur.right;
+            }
+        }
+        return ans;
+    }
+}
+
+
+
